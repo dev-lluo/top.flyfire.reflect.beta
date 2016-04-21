@@ -1,6 +1,8 @@
 package top.flyfire.reflect;
 
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
+import top.flyfire.reflect.metainfo.FieldMetaInfo;
+import top.flyfire.reflect.metainfo.TypeMetaInfo;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -33,6 +35,7 @@ public enum ReflectiveWrapper {
                 for(int i = 0;i<fields.length;i++){
                     fieldName = fields[i].getName();
                     if(ReflectiveWrapper.hasAccess(fieldName,methodMap,result)){
+                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],result[getter],result[setter]);
                         System.out.print(fieldName);
                         System.out.print(" @type:"+fields[i].getGenericType());
                         System.out.print(" @getter:"+result[getter]);
@@ -59,6 +62,7 @@ public enum ReflectiveWrapper {
         }
         return classMetaInfo;
     }
+
 
     private static boolean hasAccess(String name,Map<String,Method> methodMap,Method[] result){
         String _gname,_sname;
