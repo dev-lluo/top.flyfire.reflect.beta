@@ -10,6 +10,18 @@ public class TypeMetaInfo {
 
     private Class<?> rawType;
 
-    private ParameterizedType[] parameterizedType;
+    private Type[] innerType;
 
+    public TypeMetaInfo(Class<?> rawType, Type[] innerType) {
+        this.rawType = rawType;
+        this.innerType = innerType;
+    }
+
+    public Class<?> getRawType() {
+        return rawType;
+    }
+
+    public Type[] getInnerType() {
+        return innerType;
+    }
 }

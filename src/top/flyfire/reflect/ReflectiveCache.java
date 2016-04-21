@@ -1,32 +1,31 @@
 package top.flyfire.reflect;
 
-import java.io.ObjectStreamException;
+import top.flyfire.reflect.metainfo.ClassMetaInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by flyfire[dev.lluo@outlook.com] on 2016/4/16.
  */
-public class ReflectiveCache {
-
+public enum ReflectiveCache {
+    INSTANCE;
+    private Map<Class<?>,ClassMetaInfo> cache;
     private ReflectiveCache(){
-        if(null!=ReflectiveCacheHolder.INSTANCE){
-            throw new IllegalStateException("ReflectiveCache instance already created.");
+        this.cache = new HashMap<Class<?>,ClassMetaInfo>();
+    }
+
+    public ClassMetaInfo get(Class<?> clzz){
+        ClassMetaInfo classMetaInfo;
+        if(null==(classMetaInfo = this.cache.get(clzz))) {
+            synchronized (this.cache){
+                if(null==(classMetaInfo = this.cache.get(clzz))) {
+                    this.cache.put(clzz,ReflectiveWrapper.unWrapperClass(clzz));
+                }
+            }
         }
+        return classMetaInfo;
     }
 
-    private static class ReflectiveCacheHolder {
-        private static ReflectiveCache INSTANCE = new ReflectiveCache();
-    }
 
-    public static ReflectiveCache getInstance(){
-        return ReflectiveCacheHolder.INSTANCE;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
-    private Object readResolve() throws ObjectStreamException {
-        return ReflectiveCacheHolder.INSTANCE;
-    }
 }
