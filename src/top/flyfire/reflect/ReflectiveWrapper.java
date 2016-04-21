@@ -15,10 +15,10 @@ public enum ReflectiveWrapper {
         Field[] fields;
         Method[] methods,result = new Method[2];
         Map<String,Method> methodMap = new HashMap<>();
-        Map<String,TypeVariable> typeVariableMap;
+        Map<TypeVariable,Type> typeVariableMap = new HashMap<TypeVariable, Type>();
         int getter = 0,setter = 1;
         String fieldName;
-        while (null!=clzz.getSuperclass()){
+        while (Object.class!=clzz){
             prepared:
             {
                 fields = clzz.getDeclaredFields();
@@ -26,6 +26,7 @@ public enum ReflectiveWrapper {
                 for (int i = 0; i < methods.length; i++) {
                     methodMap.put(methods[i].getName(), methods[i]);
                 }
+
             }
             buildField:
             {
@@ -40,13 +41,26 @@ public enum ReflectiveWrapper {
                     }
                 }
             }
-
-            clzz = clzz.getSuperclass();
+            typed:
+            {
+                Type type = clzz.getGenericSuperclass();
+                clzz = clzz.getSuperclass();
+                if(type!=null&&type instanceof Class)
+                    break typed;
+                TypeVariable[] typeVariables = clzz.getTypeParameters();
+                Type[] types = ((ParameterizedType)type).getActualTypeArguments();
+                if(!typeVariableMap.isEmpty()) {
+                    typeVariableMap.clear();
+                }
+                for(int i = 0;i<typeVariables.length;i++){
+                    typeVariableMap.put(typeVariables[i],types[i]);
+                }
+            }
         }
         return classMetaInfo;
     }
 
-    public static boolean hasAccess(String name,Map<String,Method> methodMap,Method[] result){
+    private static boolean hasAccess(String name,Map<String,Method> methodMap,Method[] result){
         String _gname,_sname;
         int getter = 0,setter = 1;
         boolean has = true;

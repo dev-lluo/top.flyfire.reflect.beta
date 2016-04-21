@@ -4,6 +4,8 @@ import top.flyfire.reflect.ReflectiveWrapper;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shyy_work on 2016/4/21.
@@ -18,6 +20,26 @@ public class ClassWrapperTest {
         private Date birthday;
 
         private T t;
+
+        private List<T> tList;
+
+        private Map<String,T> tMap;
+
+        public List<T> getTList() {
+            return tList;
+        }
+
+        public void setTList(List<T> tList) {
+            this.tList = tList;
+        }
+
+        public Map<String, T> getTMap() {
+            return tMap;
+        }
+
+        public void setTMap(Map<String, T> tMap) {
+            this.tMap = tMap;
+        }
 
         public int getId() {
             return id;
@@ -68,8 +90,8 @@ public class ClassWrapperTest {
 
     public static void main(String[] args){
 //        ReflectiveWrapper.unWrapperClass(A.class);
-//        ReflectiveWrapper.unWrapperClass(AC.class);
-        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
+        ReflectiveWrapper.unWrapperClass(AC.class);
+//        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
     }
 
 
