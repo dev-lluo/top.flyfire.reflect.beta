@@ -2,7 +2,7 @@ package top.flyfire.reflect;
 
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
 import top.flyfire.reflect.metainfo.FieldMetaInfo;
-import top.flyfire.reflect.metainfo.TypeMetaInfo;
+import top.flyfire.reflect.metainfo.ParameterizedTypeMetaInfo;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -12,15 +12,28 @@ import java.util.*;
  */
 public enum ReflectiveWrapper {
     ;
-    public static ClassMetaInfo unWrapperClass(Class<?> clzz){
-        ClassMetaInfo classMetaInfo = new ClassMetaInfo();
+    public static Type unWrapper(Type type){
+        if(type instanceof Class){
+            Class clzz = (Class)type;
+            if(clzz.isArray()) {
+                ReflectiveCache.INSTANCE.get(clzz.getComponentType());
+            }else{
+                ReflectiveCache.INSTANCE.get(clzz);
+            }
+            return clzz;
+        }
+        return null;
+    }
+
+    protected static ClassMetaInfo unWrapperClass(Class<?> clzz){
+        ClassMetaInfo classMetaInfo = new ClassMetaInfo(clzz);
         Field[] fields;
         Method[] methods,result = new Method[2];
         Map<String,Method> methodMap = new HashMap<>();
-        Map<TypeVariable,Type> typeVariableMap = new HashMap<TypeVariable, Type>();
+        Type[] types = new TypeVariable[0];
         int getter = 0,setter = 1;
         String fieldName;
-        while (Object.class!=clzz){
+        while (null!=clzz&&Object.class!=clzz){
             prepared:
             {
                 fields = clzz.getDeclaredFields();
@@ -35,12 +48,9 @@ public enum ReflectiveWrapper {
                 for(int i = 0;i<fields.length;i++){
                     fieldName = fields[i].getName();
                     if(ReflectiveWrapper.hasAccess(fieldName,methodMap,result)){
-                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],result[getter],result[setter]);
-                        System.out.print(fieldName);
-                        System.out.print(" @type:"+fields[i].getGenericType());
-                        System.out.print(" @getter:"+result[getter]);
-                        System.out.print(" @setter:"+result[setter]);
-                        System.out.println();
+                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],ReflectiveWrapper.unWrapperFieldType(fields[i].getGenericType(), clzz.getTypeParameters(), types),result[getter],result[setter]);
+                        System.out.println(fieldMetaInfo);
+                        classMetaInfo.setFieldMetaInfo(fieldName,fieldMetaInfo);
                     }
                 }
             }
@@ -48,19 +58,33 @@ public enum ReflectiveWrapper {
             {
                 Type type = clzz.getGenericSuperclass();
                 clzz = clzz.getSuperclass();
-                if(type!=null&&type instanceof Class)
+                if(type==null||(type!=null&&type instanceof Class))
                     break typed;
-                TypeVariable[] typeVariables = clzz.getTypeParameters();
-                Type[] types = ((ParameterizedType)type).getActualTypeArguments();
-                if(!typeVariableMap.isEmpty()) {
-                    typeVariableMap.clear();
-                }
-                for(int i = 0;i<typeVariables.length;i++){
-                    typeVariableMap.put(typeVariables[i],types[i]);
-                }
+                types = ((ParameterizedType)type).getActualTypeArguments();
             }
         }
         return classMetaInfo;
+    }
+
+    private static Type unWrapperFieldType(Type type,TypeVariable[] typeVariables,Type[] types){
+        if(type instanceof Class){
+            return type;
+        }else if(type instanceof TypeVariable){
+            for(int i = 0;i<typeVariables.length;i++){
+                if(type.equals(typeVariables[i]))
+                    return types.length>i?types[i]:Object.class;
+            }
+            return Object.class;
+        }else if(type instanceof ParameterizedType){
+            ParameterizedType parameterizedType = (ParameterizedType)type;
+            Type[] realTypes = parameterizedType.getActualTypeArguments();
+            for(int i = 0;i<realTypes.length;i++){
+                realTypes[i] = ReflectiveWrapper.unWrapperFieldType(realTypes[i],typeVariables,types);
+            }
+            return new ParameterizedTypeMetaInfo(ReflectiveWrapper.unWrapper(parameterizedType.getRawType()),ReflectiveWrapper.unWrapper(parameterizedType.getOwnerType()),realTypes);
+        }else{
+            return type;
+        }
     }
 
 

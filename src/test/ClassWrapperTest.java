@@ -1,6 +1,8 @@
 package test;
 
+import top.flyfire.reflect.RawType;
 import top.flyfire.reflect.ReflectiveWrapper;
+import top.flyfire.reflect.metainfo.ClassMetaInfo;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -73,8 +75,8 @@ public class ClassWrapperTest {
             this.t = t;
         }
     }
-
-    public static class AC extends A<String>{
+// extends A<String>
+    public static class AC<T extends Map>{
 
         private String age;
 
@@ -86,13 +88,30 @@ public class ClassWrapperTest {
         public void setAge(String age) {
             this.age = age;
         }
+
+        public T obj;
+
+        public T getObj() {
+            return obj;
+        }
+
+        public void setObj(T obj) {
+            this.obj = obj;
+        }
+    }
+//<Map<String,Date>>
+    public static class ACC extends AC {
+
     }
 
     public static void main(String[] args){
 //        ReflectiveWrapper.unWrapperClass(A.class);
-        ReflectiveWrapper.unWrapperClass(AC.class);
+        ReflectiveWrapper.unWrapper(ACC.class);
 //        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
+//        gg(AC.class);
+
     }
+
 
 
 

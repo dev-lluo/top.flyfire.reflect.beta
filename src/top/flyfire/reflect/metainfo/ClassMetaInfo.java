@@ -1,32 +1,37 @@
 package top.flyfire.reflect.metainfo;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by shyy_work on 2016/4/21.
  */
-public class ClassMetaInfo {
-    private Type rawType;
+public class ClassMetaInfo implements Type {
+    private final Class<?> rawType;
 
-    public Type getRawType() {
+    public final Class<?> getRawType() {
         return rawType;
     }
 
-    public void setRawType(Type rawType) {
+    private final Map<String,FieldMetaInfo> fieldMetaInfoMap;
+
+    public Map<String,FieldMetaInfo> getFieldMetaInfoMap(){
+        return this.fieldMetaInfoMap;
+    }
+
+    public void setFieldMetaInfo(String fieldName,FieldMetaInfo fieldMetaInfo){
+        this.fieldMetaInfoMap.put(fieldName,fieldMetaInfo);
+    }
+
+    public ClassMetaInfo(Class<?> rawType) {
+        super();
         this.rawType = rawType;
+        this.fieldMetaInfoMap = new HashMap<>();
     }
 
-    private Type[] innerType;
-
-    public void initInnerType(int size){
-        this.innerType = new Type[size];
-    }
-
-    public Type[] getInnerType(){
-        return this.innerType;
-    }
-
-    public void setInnerType(int i,Type type){
-        this.innerType[i] = null==type?Object.class:type;
+    @Override
+    public String toString() {
+        return this.rawType.getTypeName();
     }
 }
