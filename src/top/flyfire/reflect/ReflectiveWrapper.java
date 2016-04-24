@@ -2,7 +2,9 @@ package top.flyfire.reflect;
 
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
 import top.flyfire.reflect.metainfo.FieldMetaInfo;
-import top.flyfire.reflect.metainfo.ParameterizedTypeMetaInfo;
+import top.flyfire.reflect.type.TypeGenericArray;
+import top.flyfire.reflect.type.TypeParameterized;
+import top.flyfire.reflect.type.TypeWildcard;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -81,7 +83,13 @@ public enum ReflectiveWrapper {
             for(int i = 0;i<realTypes.length;i++){
                 realTypes[i] = ReflectiveWrapper.unWrapperFieldType(realTypes[i],typeVariables,types);
             }
-            return new ParameterizedTypeMetaInfo(ReflectiveWrapper.unWrapper(parameterizedType.getRawType()),ReflectiveWrapper.unWrapper(parameterizedType.getOwnerType()),realTypes);
+            return new TypeParameterized(ReflectiveWrapper.unWrapper(parameterizedType.getRawType()),ReflectiveWrapper.unWrapper(parameterizedType.getOwnerType()),realTypes);
+        }else if(type instanceof WildcardType){
+            WildcardType wildcardType = (WildcardType)type;
+            return new TypeWildcard(wildcardType.getUpperBounds(),wildcardType.getUpperBounds());
+        }else if(type instanceof GenericArrayType){
+            GenericArrayType genericArrayType = (GenericArrayType)type;
+            return new TypeGenericArray(ReflectiveWrapper.unWrapperFieldType(genericArrayType.getGenericComponentType(),typeVariables,types));
         }else{
             return type;
         }

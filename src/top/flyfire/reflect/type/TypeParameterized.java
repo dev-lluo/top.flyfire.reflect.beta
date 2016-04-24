@@ -1,4 +1,6 @@
-package top.flyfire.reflect.metainfo;
+package top.flyfire.reflect.type;
+
+import top.flyfire.reflect.$Type;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -6,7 +8,7 @@ import java.lang.reflect.Type;
 /**
  * Created by shyy_work on 2016/4/22.
  */
-public class ParameterizedTypeMetaInfo implements ParameterizedType {
+public class TypeParameterized extends $Type implements ParameterizedType {
 
     private final Type[] actualTypeArguments;
 
@@ -29,26 +31,24 @@ public class ParameterizedTypeMetaInfo implements ParameterizedType {
         return this.ownerType;
     }
 
-    public ParameterizedTypeMetaInfo(Type rawType, Type ownerType, Type[] actualTypeArguments) {
+    public TypeParameterized(Type rawType, Type ownerType, Type[] actualTypeArguments) {
         this.actualTypeArguments = actualTypeArguments;
         this.rawType = rawType;
         this.ownerType = ownerType;
     }
 
     @Override
-    public String toString() {
+    protected String buildTypeName() {
         if(this.actualTypeArguments==null||this.actualTypeArguments.length==0){
             return this.rawType.getTypeName();
         }else{
-            String toString = this.rawType.getTypeName();
-            toString+='<';
-            toString+=this.actualTypeArguments[0].getTypeName();
+            StringBuilder toString = new StringBuilder(this.rawType.getTypeName());
+            toString.append('<').append(this.actualTypeArguments[0].getTypeName());
             for(int i =1;i<this.actualTypeArguments.length;i++){
-                toString+=',';
-                toString+=this.actualTypeArguments[i].getTypeName();
+                toString.append(',').append(this.actualTypeArguments[i].getTypeName());
             }
-            toString+='>';
-            return toString;
+            toString.append('>');
+            return toString.toString();
         }
     }
 }

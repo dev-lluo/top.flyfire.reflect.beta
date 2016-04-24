@@ -4,10 +4,7 @@ import top.flyfire.reflect.RawType;
 import top.flyfire.reflect.ReflectiveWrapper;
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by shyy_work on 2016/4/21.
@@ -76,7 +73,7 @@ public class ClassWrapperTest {
         }
     }
 // extends A<String>
-    public static class AC<T extends Map>{
+    public static class AC<T extends AbstractMap>{
 
         private String age;
 
@@ -89,7 +86,7 @@ public class ClassWrapperTest {
             this.age = age;
         }
 
-        public T obj;
+        private T obj;
 
         public T getObj() {
             return obj;
@@ -98,9 +95,29 @@ public class ClassWrapperTest {
         public void setObj(T obj) {
             this.obj = obj;
         }
+
+        private Map<? extends Number,? extends CharSequence> str;
+
+        public Map<? extends Number, ? extends CharSequence> getStr() {
+            return str;
+        }
+
+        public void setStr(Map<? extends Number, ? extends CharSequence> str) {
+            this.str = str;
+        }
+
+        private T[] objArr;
+
+        public T[] getObjArr() {
+            return objArr;
+        }
+
+        public void setObjArr(T[] objArr) {
+            this.objArr = objArr;
+        }
     }
 //<Map<String,Date>>
-    public static class ACC extends AC {
+    public static class ACC extends AC<HashMap> {
 
     }
 
