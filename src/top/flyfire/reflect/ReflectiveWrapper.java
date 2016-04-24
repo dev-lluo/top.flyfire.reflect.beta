@@ -86,7 +86,7 @@ public enum ReflectiveWrapper {
             return new TypeParameterized(ReflectiveWrapper.unWrapper(parameterizedType.getRawType()),ReflectiveWrapper.unWrapper(parameterizedType.getOwnerType()),realTypes);
         }else if(type instanceof WildcardType){
             WildcardType wildcardType = (WildcardType)type;
-            return new TypeWildcard(wildcardType.getUpperBounds(),wildcardType.getUpperBounds());
+            return new TypeWildcard(wildcardType.getUpperBounds(),wildcardType.getLowerBounds());
         }else if(type instanceof GenericArrayType){
             GenericArrayType genericArrayType = (GenericArrayType)type;
             return new TypeGenericArray(ReflectiveWrapper.unWrapperFieldType(genericArrayType.getGenericComponentType(),typeVariables,types));
