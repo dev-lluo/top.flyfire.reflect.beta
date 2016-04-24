@@ -73,7 +73,7 @@ public class ClassWrapperTest {
         }
     }
 // extends A<String>
-    public static class AC<T extends AbstractMap>{
+    public static class AC<T extends Map>{
 
         private String age;
 
@@ -117,7 +117,7 @@ public class ClassWrapperTest {
         }
     }
 //<Map<String,Date>>
-    public static class ACC extends AC<HashMap> {
+    public static class ACC extends AC {
 
     }
 

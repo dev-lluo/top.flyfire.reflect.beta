@@ -74,7 +74,7 @@ public enum ReflectiveWrapper {
         }else if(type instanceof TypeVariable){
             for(int i = 0;i<typeVariables.length;i++){
                 if(type.equals(typeVariables[i]))
-                    return types.length>i?types[i]:Object.class;
+                    return types.length>i?types[i]:((TypeVariable) type).getBounds()[0];
             }
             return Object.class;
         }else if(type instanceof ParameterizedType){
