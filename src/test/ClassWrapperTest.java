@@ -115,9 +115,19 @@ public class ClassWrapperTest {
         public void setObjArr(T[] objArr) {
             this.objArr = objArr;
         }
+
+    public Map<String, T> getPpmpMap() {
+        return ppmpMap;
+    }
+
+    public void setPpmpMap(Map<String, T> ppmpMap) {
+        this.ppmpMap = ppmpMap;
+    }
+
+    private Map<String,T> ppmpMap;
     }
 //<Map<String,Date>>
-    public static class ACC extends AC {
+    public static class ACC extends AC<Map<String,Date>> {
 
     }
 

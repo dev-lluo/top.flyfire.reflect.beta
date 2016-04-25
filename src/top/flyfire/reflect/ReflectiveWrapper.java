@@ -18,13 +18,32 @@ public enum ReflectiveWrapper {
         if(type instanceof Class){
             Class clzz = (Class)type;
             if(clzz.isArray()) {
-                ReflectiveCache.INSTANCE.get(clzz.getComponentType());
+                 return new TypeGenericArray(clzz.getComponentType());
             }else{
-                ReflectiveCache.INSTANCE.get(clzz);
+                return ReflectiveCache.INSTANCE.get(clzz);
             }
-            return clzz;
+        }else if(type instanceof TypeVariable){
+            return ReflectiveWrapper.unWrapper(((TypeVariable) type).getBounds()[0]);
+        }else if(type instanceof ParameterizedType){
+            ParameterizedType parameterizedType = (ParameterizedType)type;
+            return new TypeParameterized(parameterizedType.getRawType(),parameterizedType.getOwnerType(),parameterizedType.getActualTypeArguments());
+        }else if(type instanceof WildcardType){
+            WildcardType wildcardType = (WildcardType)type;
+            return new TypeWildcard(wildcardType.getUpperBounds(),wildcardType.getLowerBounds());
+        }else if(type instanceof GenericArrayType){
+            GenericArrayType genericArrayType = (GenericArrayType)type;
+            return new TypeGenericArray(genericArrayType.getGenericComponentType());
+        }else{
+            return type;
         }
-        return null;
+    }
+
+    public static Type[] unWrapper(Type[] types){
+        Type[] result = new Type[types.length];
+        for(int i = 0;i<types.length;i++){
+            result[i] = ReflectiveWrapper.unWrapper(types[i]);
+        }
+        return result;
     }
 
     protected static ClassMetaInfo unWrapperClass(Class<?> clzz){
@@ -50,7 +69,7 @@ public enum ReflectiveWrapper {
                 for(int i = 0;i<fields.length;i++){
                     fieldName = fields[i].getName();
                     if(ReflectiveWrapper.hasAccess(fieldName,methodMap,result)){
-                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],ReflectiveWrapper.unWrapperFieldType(fields[i].getGenericType(), clzz.getTypeParameters(), types),result[getter],result[setter]);
+                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],ReflectiveWrapper.unWrapper(fields[i].getGenericType()),result[getter],result[setter]);
                         System.out.println(fieldMetaInfo);
                         classMetaInfo.setFieldMetaInfo(fieldName,fieldMetaInfo);
                     }
@@ -66,33 +85,6 @@ public enum ReflectiveWrapper {
             }
         }
         return classMetaInfo;
-    }
-
-    private static Type unWrapperFieldType(Type type,TypeVariable[] typeVariables,Type[] types){
-        if(type instanceof Class){
-            return type;
-        }else if(type instanceof TypeVariable){
-            for(int i = 0;i<typeVariables.length;i++){
-                if(type.equals(typeVariables[i]))
-                    return types.length>i?types[i]:((TypeVariable) type).getBounds()[0];
-            }
-            return Object.class;
-        }else if(type instanceof ParameterizedType){
-            ParameterizedType parameterizedType = (ParameterizedType)type;
-            Type[] realTypes = parameterizedType.getActualTypeArguments();
-            for(int i = 0;i<realTypes.length;i++){
-                realTypes[i] = ReflectiveWrapper.unWrapperFieldType(realTypes[i],typeVariables,types);
-            }
-            return new TypeParameterized(ReflectiveWrapper.unWrapper(parameterizedType.getRawType()),ReflectiveWrapper.unWrapper(parameterizedType.getOwnerType()),realTypes);
-        }else if(type instanceof WildcardType){
-            WildcardType wildcardType = (WildcardType)type;
-            return new TypeWildcard(wildcardType.getUpperBounds(),wildcardType.getLowerBounds());
-        }else if(type instanceof GenericArrayType){
-            GenericArrayType genericArrayType = (GenericArrayType)type;
-            return new TypeGenericArray(ReflectiveWrapper.unWrapperFieldType(genericArrayType.getGenericComponentType(),typeVariables,types));
-        }else{
-            return type;
-        }
     }
 
 

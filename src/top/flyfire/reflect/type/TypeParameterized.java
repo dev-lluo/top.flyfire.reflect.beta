@@ -1,6 +1,7 @@
 package top.flyfire.reflect.type;
 
 import top.flyfire.reflect.$Type;
+import top.flyfire.reflect.ReflectiveWrapper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -32,9 +33,9 @@ public class TypeParameterized extends $Type implements ParameterizedType {
     }
 
     public TypeParameterized(Type rawType, Type ownerType, Type[] actualTypeArguments) {
-        this.actualTypeArguments = actualTypeArguments;
-        this.rawType = rawType;
-        this.ownerType = ownerType;
+        this.actualTypeArguments = ReflectiveWrapper.unWrapper(actualTypeArguments);
+        this.rawType = ReflectiveWrapper.unWrapper(rawType);
+        this.ownerType = ReflectiveWrapper.unWrapper(ownerType);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package top.flyfire.reflect.type;
 
 import top.flyfire.reflect.$Type;
+import top.flyfire.reflect.ReflectiveWrapper;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
@@ -23,6 +24,6 @@ public class TypeGenericArray extends $Type implements GenericArrayType {
     }
 
     public TypeGenericArray(Type genericComponentType) {
-        this.genericComponentType = genericComponentType;
+        this.genericComponentType = ReflectiveWrapper.unWrapper(genericComponentType);
     }
 }

@@ -1,6 +1,7 @@
 package top.flyfire.reflect.type;
 
 import top.flyfire.reflect.$Type;
+import top.flyfire.reflect.ReflectiveWrapper;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -38,7 +39,7 @@ public class TypeWildcard extends $Type implements WildcardType {
     }
 
     public TypeWildcard(Type[] upperBounds, Type[] lowerBounds) {
-        this.upperBounds = upperBounds==null?NONE:upperBounds;
-        this.lowerBounds = lowerBounds==null?NONE:lowerBounds;
+        this.upperBounds = upperBounds==null?NONE: ReflectiveWrapper.unWrapper(upperBounds);
+        this.lowerBounds = lowerBounds==null?NONE: ReflectiveWrapper.unWrapper(lowerBounds);
     }
 }

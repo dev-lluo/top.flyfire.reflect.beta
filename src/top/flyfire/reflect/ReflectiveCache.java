@@ -20,7 +20,7 @@ public enum ReflectiveCache {
         if(null==(classMetaInfo = this.cache.get(clzz))) {
             synchronized (this.cache){
                 if(null==(classMetaInfo = this.cache.get(clzz))) {
-                    this.cache.put(clzz,ReflectiveWrapper.unWrapperClass(clzz));
+                    this.cache.put(clzz,classMetaInfo = ReflectiveWrapper.unWrapperClass(clzz));
                 }
             }
         }
