@@ -4,6 +4,7 @@ import top.flyfire.reflect.RawType;
 import top.flyfire.reflect.ReflectiveCache;
 import top.flyfire.reflect.ReflectiveWrapper;
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
+import top.flyfire.reflect.type.TypeParameterized;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -137,7 +138,8 @@ public class ClassWrapperTest {
 //        ReflectiveWrapper.unWrapperClass(A.class);
         Type type = ReflectiveWrapper.unWrapper(ACC.class);
 //        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
-        type = ReflectiveWrapper.unWrapper(new RawType<A<Date>>(){}.getType());
+        type = new RawType<A<Date>>(){}.getType();
+        type = new RawType<String>(){}.getType();
         System.out.println("success!!!");
     }
 

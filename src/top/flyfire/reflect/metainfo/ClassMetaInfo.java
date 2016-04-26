@@ -9,6 +9,9 @@ import top.flyfire.reflect.type.TypeParameterized;
 import top.flyfire.reflect.type.TypeWildcard;
 
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -25,6 +28,34 @@ public final class ClassMetaInfo extends $Type {
     public final static ClassMetaInfo $List = new ClassMetaInfo(List.class);
 
     public final static ClassMetaInfo $Set = new ClassMetaInfo(Set.class);
+
+    public final static ClassMetaInfo $String = new ClassMetaInfo(String.class);
+
+    public final static ClassMetaInfo $Number = new ClassMetaInfo(Number.class);
+
+    public final static ClassMetaInfo $Integer = new ClassMetaInfo(Integer.class);
+
+    public final static ClassMetaInfo $Float = new ClassMetaInfo(Float.class);
+
+    public final static ClassMetaInfo $Double = new ClassMetaInfo(Double.class);
+
+    public final static ClassMetaInfo $Boolean = new ClassMetaInfo(Boolean.class);
+
+    public final static ClassMetaInfo $Byte = new ClassMetaInfo(Byte.class);
+
+    public final static ClassMetaInfo $Short = new ClassMetaInfo(Short.class);
+
+    public final static ClassMetaInfo $Long = new ClassMetaInfo(Long.class);
+
+    public final static ClassMetaInfo $Date = new ClassMetaInfo(java.util.Date.class);
+
+    public final static ClassMetaInfo $SqlDate = new ClassMetaInfo(java.sql.Date.class);
+
+    public final static ClassMetaInfo $Timestamp = new ClassMetaInfo(Timestamp.class);
+
+    public final static ClassMetaInfo $BigDecimal = new ClassMetaInfo(BigDecimal.class);
+
+    public final static ClassMetaInfo $BigInteger = new ClassMetaInfo(BigInteger.class);
 
     private final Class<?> rawType;
 
