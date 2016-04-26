@@ -1,9 +1,11 @@
 package test;
 
 import top.flyfire.reflect.RawType;
+import top.flyfire.reflect.ReflectiveCache;
 import top.flyfire.reflect.ReflectiveWrapper;
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -72,8 +74,8 @@ public class ClassWrapperTest {
             this.t = t;
         }
     }
-// extends A<String>
-    public static class AC<T extends Map>{
+//
+    public static class AC<T> extends A<String>{
 
         private String age;
 
@@ -127,16 +129,16 @@ public class ClassWrapperTest {
     private Map<String,T> ppmpMap;
     }
 //<Map<String,Date>>
-    public static class ACC extends AC<Map<String,Date>> {
+    public static class ACC extends AC<AC<String>> {
 
     }
 
     public static void main(String[] args){
 //        ReflectiveWrapper.unWrapperClass(A.class);
-        ReflectiveWrapper.unWrapper(ACC.class);
+        Type type = ReflectiveWrapper.unWrapper(ACC.class);
 //        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
-//        gg(AC.class);
-
+        type = ReflectiveWrapper.unWrapper(new RawType<A<Date>>(){}.getType());
+        System.out.println("success!!!");
     }
 
 

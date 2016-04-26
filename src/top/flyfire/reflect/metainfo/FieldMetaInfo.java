@@ -40,12 +40,12 @@ public class FieldMetaInfo {
         return type;
     }
 
-    public FieldMetaInfo(String fieldName,Field field,Type type,Method setter, Method getter) {
+    public FieldMetaInfo(String fieldName,Field field,Type type, Method getter ,Method setter) {
         this.fieldName = fieldName;
         this.field = field;
         this.type = type;
-        this.setter = setter;
         this.getter = getter;
+        this.setter = setter;
 
     }
 

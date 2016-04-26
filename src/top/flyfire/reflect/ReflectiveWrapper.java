@@ -51,10 +51,9 @@ public enum ReflectiveWrapper {
         Field[] fields;
         Method[] methods,result = new Method[2];
         Map<String,Method> methodMap = new HashMap<>();
-        Type[] types = new TypeVariable[0];
         int getter = 0,setter = 1;
         String fieldName;
-        while (null!=clzz&&Object.class!=clzz){
+        syntax:{
             prepared:
             {
                 fields = clzz.getDeclaredFields();
@@ -69,19 +68,22 @@ public enum ReflectiveWrapper {
                 for(int i = 0;i<fields.length;i++){
                     fieldName = fields[i].getName();
                     if(ReflectiveWrapper.hasAccess(fieldName,methodMap,result)){
-                        FieldMetaInfo fieldMetaInfo = new FieldMetaInfo(fieldName,fields[i],ReflectiveWrapper.unWrapper(fields[i].getGenericType()),result[getter],result[setter]);
-                        System.out.println(fieldMetaInfo);
-                        classMetaInfo.setFieldMetaInfo(fieldName,fieldMetaInfo);
+                        classMetaInfo.setFieldMetaInfo(fieldName,new FieldMetaInfo(fieldName,fields[i],ReflectiveWrapper.unWrapper(fields[i].getGenericType()),result[getter],result[setter]));
                     }
                 }
             }
-            typed:
+            buildSuper:
             {
-                Type type = clzz.getGenericSuperclass();
-                clzz = clzz.getSuperclass();
-                if(type==null||(type!=null&&type instanceof Class))
-                    break typed;
-                types = ((ParameterizedType)type).getActualTypeArguments();
+                Type superType = ReflectiveWrapper.unWrapper(clzz.getGenericSuperclass());
+                if(null==superType){
+                    break syntax;
+                }else if(superType instanceof ClassMetaInfo){
+                    classMetaInfo.extendSuper((ClassMetaInfo)superType);
+                }else if(superType instanceof TypeParameterized){
+                    classMetaInfo.extendSuper((TypeParameterized)superType);
+                }else{
+                    throw new ReflectiveSyntaxException("[A ClassMetaInfo or TypeParameterized is expected in the buidlSuper , but superType is of type "+superType+" .]");
+                }
             }
         }
         return classMetaInfo;
