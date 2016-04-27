@@ -14,6 +14,11 @@ public abstract class $Type implements Type {
     protected abstract String buildTypeName();
 
     @Override
+    public final String getTypeName() {
+        return this.toString();
+    }
+
+    @Override
     public final String toString() {
         return this.typeName == null?this.typeName=this.buildTypeName():this.typeName;
     }
