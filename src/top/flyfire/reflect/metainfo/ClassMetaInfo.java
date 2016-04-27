@@ -1,9 +1,6 @@
 package top.flyfire.reflect.metainfo;
 
-import top.flyfire.reflect.$Type;
-import top.flyfire.reflect.ReflectiveCache;
-import top.flyfire.reflect.ReflectiveSyntaxException;
-import top.flyfire.reflect.ReflectiveWrapper;
+import top.flyfire.reflect.*;
 import top.flyfire.reflect.type.TypeGenericArray;
 import top.flyfire.reflect.type.TypeParameterized;
 import top.flyfire.reflect.type.TypeWildcard;
@@ -67,6 +64,8 @@ public final class ClassMetaInfo extends $Type {
 
     private final Map<String,FieldMetaInfo> fieldMetaInfoMap;
 
+    private final boolean isJdkType;
+
     public Map<String,FieldMetaInfo> getFieldMetaInfoMap(){
         return this.fieldMetaInfoMap;
     }
@@ -100,9 +99,14 @@ public final class ClassMetaInfo extends $Type {
         });
     }
 
+    public boolean isJdkType(){
+        return this.isJdkType;
+    }
+
     public ClassMetaInfo(Class<?> rawType) {
         super();
         this.rawType = rawType;
+        this.isJdkType = ReflectUtil.isJdkType(rawType);
         this.typeParameters = this.rawType.getTypeParameters();
         this.fieldMetaInfoMap = new HashMap<>();
     }

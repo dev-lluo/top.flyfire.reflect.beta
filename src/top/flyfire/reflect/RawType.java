@@ -13,7 +13,9 @@ public abstract class RawType<T> {
 
     private static final int INS = 0;
 
-    public final Type getType(){
+    private Type type;
+
+    public RawType() {
         Type type = this.getClass().getGenericSuperclass();
         if(type instanceof ParameterizedType){
             ParameterizedType parameterizedType = (ParameterizedType)type;
@@ -22,15 +24,23 @@ public abstract class RawType<T> {
                 TypeParameterized pType = (TypeParameterized)type;
                 classMetaInfo = new ClassMetaInfo(((ClassMetaInfo) pType.getRawType()).getRawType());
                 classMetaInfo.extendSuper(pType);
-                return classMetaInfo;
+                this.type=classMetaInfo;
             }else if(type instanceof ClassMetaInfo){
                 classMetaInfo = (ClassMetaInfo)type;
-                return classMetaInfo;
+                this.type = classMetaInfo;
             }else{
                 throw new ReflectiveSyntaxException("[A ClassMetaInfo or TypeParameterized is expected in the buidlSuper , but superType is of type "+type+" .]");
             }
         }
         throw new IllegalArgumentException("type arguments is missing.");
+    }
+
+    public RawType(Class<?> type) {
+        this.type = ReflectiveWrapper.unWrapper(type);
+    }
+
+    public final Type getType(){
+        return this.type;
     }
 
 }
