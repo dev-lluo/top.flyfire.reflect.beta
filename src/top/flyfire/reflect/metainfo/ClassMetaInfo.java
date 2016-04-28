@@ -66,8 +66,12 @@ public final class ClassMetaInfo extends $Type {
 
     private final boolean isJdkType;
 
-    public Map<String,FieldMetaInfo> getFieldMetaInfoMap(){
+    protected Map<String,FieldMetaInfo> getFieldMetaInfoMap(){
         return this.fieldMetaInfoMap;
+    }
+
+    public FieldMetaInfo getFieldMetaInfo(String fieldName){
+        return this.fieldMetaInfoMap.get(fieldName);
     }
 
     public void setFieldMetaInfo(String fieldName,FieldMetaInfo fieldMetaInfo){
