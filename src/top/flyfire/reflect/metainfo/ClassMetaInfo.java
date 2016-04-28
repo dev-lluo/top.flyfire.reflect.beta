@@ -56,6 +56,8 @@ public final class ClassMetaInfo extends $Type {
 
     private final Class<?> rawType;
 
+    private final ConstructorMetaInfo constructorMetaInfo;
+
     private final TypeVariable[] typeParameters;
 
     public final Class<?> getRawType() {
@@ -65,6 +67,8 @@ public final class ClassMetaInfo extends $Type {
     private final Map<String,FieldMetaInfo> fieldMetaInfoMap;
 
     private final boolean isJdkType;
+
+    private final boolean isInterface;
 
     protected Map<String,FieldMetaInfo> getFieldMetaInfoMap(){
         return this.fieldMetaInfoMap;
@@ -107,10 +111,25 @@ public final class ClassMetaInfo extends $Type {
         return this.isJdkType;
     }
 
+    public Object $new(){
+        try {
+            return this.constructorMetaInfo.$new();
+        }catch (ReflectiveOperationException e){
+            throw new ReflectiveException(e);
+        }
+    }
+
+    @Override
+    public boolean compatible(Type type) {
+        return false;
+    }
+
     public ClassMetaInfo(Class<?> rawType) {
         super();
         this.rawType = rawType;
         this.isJdkType = ReflectUtil.isJdkType(rawType);
+        this.isInterface = ReflectUtil.isInterface(rawType);
+        this.constructorMetaInfo = ConstructorCache.INSTANCE.get(this.rawType);
         this.typeParameters = this.rawType.getTypeParameters();
         this.fieldMetaInfoMap = new HashMap<>();
     }
@@ -122,11 +141,11 @@ public final class ClassMetaInfo extends $Type {
 
     private static Type unWrapperField(Type type,TypeVariable[] typeVariables,Type[] types){
         if(type instanceof Class){
-            return ReflectiveCache.INSTANCE.get((Class)type);
+            return ReflectiveWrapper.unWrapper(type);
         }else if(type instanceof TypeVariable){
             for(int i = 0;i<typeVariables.length;i++){
                 if(type.equals(typeVariables[i]))
-                    return ReflectiveWrapper.unWrapper(types.length>i?types[i]:((TypeVariable) type).getBounds()[0]);
+                    return ReflectiveWrapper.unWrapper(types.length>i?types[i]:type);
             }
             return $Object;
         }else if(type instanceof ParameterizedType){

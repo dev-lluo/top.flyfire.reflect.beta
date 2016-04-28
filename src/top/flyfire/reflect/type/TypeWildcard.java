@@ -28,6 +28,11 @@ public class TypeWildcard extends $Type implements WildcardType {
     }
 
     @Override
+    public boolean compatible(Type type) {
+        return false;
+    }
+
+    @Override
     protected String buildTypeName() {
         if(this.lowerBounds.length>0){
             return "? super " + this.lowerBounds[DEFAULT].getTypeName();

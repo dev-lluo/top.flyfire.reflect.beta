@@ -1,5 +1,7 @@
 package top.flyfire.reflect.metainfo;
 
+import top.flyfire.reflect.ReflectiveException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -26,6 +28,22 @@ public class FieldMetaInfo {
 
     public Method getSetter() {
         return setter;
+    }
+
+    public Object invokeGetter(Object object){
+        try {
+            return this.getter.invoke(object);
+        }catch (ReflectiveOperationException e){
+            throw new ReflectiveException(e);
+        }
+    }
+
+    public void invokeSetter(Object object,Object objectParameterized){
+        try {
+            this.setter.invoke(object,objectParameterized);
+        }catch (ReflectiveOperationException e){
+            throw new ReflectiveException(e);
+        }
     }
 
     public String getFieldName() {

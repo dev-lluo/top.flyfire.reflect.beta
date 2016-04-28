@@ -1,10 +1,6 @@
 package test;
 
 import top.flyfire.reflect.RawType;
-import top.flyfire.reflect.ReflectiveCache;
-import top.flyfire.reflect.ReflectiveWrapper;
-import top.flyfire.reflect.metainfo.ClassMetaInfo;
-import top.flyfire.reflect.type.TypeParameterized;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -136,11 +132,17 @@ public class ClassWrapperTest {
 
     public static void main(String[] args){
 //        ReflectiveWrapper.unWrapperClass(A.class);
-        Type type = ReflectiveWrapper.unWrapper(ACC.class);
+        long start = System.currentTimeMillis();
+        for(int i = 0;i<1000000;i++) {
+            Type type = new RawType(ACC.class) {
+            }.getType();
 //        ReflectiveWrapper.unWrapperClass(new HashMap<String,String>().getClass());
-        type = new RawType<A<Date>>(){}.getType();
-        type = new RawType<String>(){}.getType();
-        System.out.println("success!!!");
+            type = new RawType<A<Date>>() {
+            }.getType();
+            type = new RawType<String>() {
+            }.getType();
+        }
+        System.out.println("success["+(System.currentTimeMillis()-start)+"s]!!!");
     }
 
 

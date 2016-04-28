@@ -9,6 +9,10 @@ import java.util.Map;
  */
 public interface ReflectUtil {
     static boolean isJdkType(Class clzz){
-        return clzz.isPrimitive()||Number.class.isAssignableFrom(clzz)||Date.class.isAssignableFrom(clzz)|| Collection.class.isAssignableFrom(clzz)|| Map.class.isAssignableFrom(clzz);
+        return clzz.isPrimitive()||Number.class.isAssignableFrom(clzz)||Date.class.isAssignableFrom(clzz)|| Boolean.class.isAssignableFrom(clzz)|| Collection.class.isAssignableFrom(clzz)|| Map.class.isAssignableFrom(clzz);
+    }
+
+    static boolean isInterface(Class clzz){
+        return clzz.isInterface();
     }
 }

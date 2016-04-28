@@ -19,6 +19,11 @@ public class TypeGenericArray extends $Type implements GenericArrayType {
     }
 
     @Override
+    public boolean compatible(Type type) {
+        return false;
+    }
+
+    @Override
     protected String buildTypeName() {
         return this.genericComponentType.getTypeName()+"[]";
     }
@@ -26,4 +31,5 @@ public class TypeGenericArray extends $Type implements GenericArrayType {
     public TypeGenericArray(Type genericComponentType) {
         this.genericComponentType = ReflectiveWrapper.unWrapper(genericComponentType);
     }
+
 }

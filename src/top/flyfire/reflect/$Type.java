@@ -13,6 +13,8 @@ public abstract class $Type implements Type {
 
     protected abstract String buildTypeName();
 
+    public abstract boolean compatible(Type type);
+
     @Override
     public final String getTypeName() {
         return this.toString();

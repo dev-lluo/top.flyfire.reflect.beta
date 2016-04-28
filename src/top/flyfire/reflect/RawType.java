@@ -15,32 +15,43 @@ public abstract class RawType<T> {
 
     private Type type;
 
-    public RawType() {
-        Type type = this.getClass().getGenericSuperclass();
-        if(type instanceof ParameterizedType){
-            ParameterizedType parameterizedType = (ParameterizedType)type;
-            ClassMetaInfo classMetaInfo;
-            if((type = ReflectiveWrapper.unWrapper(((ParameterizedType) type).getActualTypeArguments()[INS])) instanceof TypeParameterized) {
-                TypeParameterized pType = (TypeParameterized)type;
-                classMetaInfo = new ClassMetaInfo(((ClassMetaInfo) pType.getRawType()).getRawType());
-                classMetaInfo.extendSuper(pType);
-                this.type=classMetaInfo;
-            }else if(type instanceof ClassMetaInfo){
-                classMetaInfo = (ClassMetaInfo)type;
-                this.type = classMetaInfo;
-            }else{
-                throw new ReflectiveSyntaxException("[A ClassMetaInfo or TypeParameterized is expected in the buidlSuper , but superType is of type "+type+" .]");
-            }
-        }
-        throw new IllegalArgumentException("type arguments is missing.");
-    }
+    public RawType() { }
 
     public RawType(Class<?> type) {
-        this.type = ReflectiveWrapper.unWrapper(type);
+        this.type = type;
     }
 
+
+
     public final Type getType(){
-        return this.type;
+        if(null==this.type) {
+            this.type = this.getClass().getGenericSuperclass();
+            if (this.type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                ClassMetaInfo classMetaInfo;
+                if ((type = ReflectiveWrapper.unWrapper(((ParameterizedType) type).getActualTypeArguments()[INS])) instanceof TypeParameterized) {
+                    TypeParameterized pType = (TypeParameterized) type;
+                    classMetaInfo = new ClassMetaInfo(((ClassMetaInfo) pType.getRawType()).getRawType());
+                    classMetaInfo.extendSuper(pType);
+                    this.type = classMetaInfo;
+                } else if (type instanceof ClassMetaInfo) {
+                    classMetaInfo = (ClassMetaInfo) type;
+                    this.type = classMetaInfo;
+                } else {
+                    throw new ReflectiveSyntaxException("[A ClassMetaInfo or TypeParameterized is expected in the buidlSuper , but superType is of type " + type + " .]");
+                }
+                return this.type;
+            }else{
+                throw new IllegalArgumentException("type arguments is missing.");
+            }
+        }else if(this.type instanceof Class) {
+            this.type = ReflectiveWrapper.unWrapper(this.type);
+            return this.type;
+        }else if(this.type instanceof ClassMetaInfo){
+            return this.type;
+        }else{
+            throw new IllegalArgumentException("type arguments is missing.");
+        }
     }
 
 }

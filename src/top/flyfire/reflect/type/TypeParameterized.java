@@ -32,6 +32,11 @@ public class TypeParameterized extends $Type implements ParameterizedType {
         return this.ownerType;
     }
 
+    @Override
+    public boolean compatible(Type type) {
+        return false;
+    }
+
     public TypeParameterized(Type rawType, Type ownerType, Type[] actualTypeArguments) {
         this.actualTypeArguments = ReflectiveWrapper.unWrapper(actualTypeArguments);
         this.rawType = ReflectiveWrapper.unWrapper(rawType);

@@ -2,6 +2,7 @@ package top.flyfire.reflect;
 
 import top.flyfire.reflect.metainfo.ClassMetaInfo;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -12,36 +13,39 @@ import java.util.*;
  */
 public enum ReflectiveCache {
     INSTANCE;
-    private Map<Class<?>,ClassMetaInfo> cache;
+    private Map<Class<?>,ClassMetaInfo> classCache;
     private ReflectiveCache(){
-        this.cache = new HashMap<Class<?>,ClassMetaInfo>();
-        this.cache.put(Object.class,ClassMetaInfo.$Object);
-        this.cache.put(Map.class,ClassMetaInfo.$Map);
-        this.cache.put(Collection.class,ClassMetaInfo.$Collection);
-        this.cache.put(List.class,ClassMetaInfo.$List);
-        this.cache.put(Set.class,ClassMetaInfo.$Set);
-        this.cache.put(String.class,ClassMetaInfo.$String);
-        this.cache.put(Number.class,ClassMetaInfo.$Number);
-        this.cache.put(Integer.class,ClassMetaInfo.$Integer);
-        this.cache.put(Float.class,ClassMetaInfo.$Float);
-        this.cache.put(Double.class,ClassMetaInfo.$Double);
-        this.cache.put(Boolean.class,ClassMetaInfo.$Boolean);
-        this.cache.put(Byte.class,ClassMetaInfo.$Byte);
-        this.cache.put(Short.class,ClassMetaInfo.$Short);
-        this.cache.put(Long.class,ClassMetaInfo.$Long);
-        this.cache.put(java.util.Date.class,ClassMetaInfo.$Date);
-        this.cache.put(java.sql.Date.class,ClassMetaInfo.$SqlDate);
-        this.cache.put(Timestamp.class,ClassMetaInfo.$Timestamp);
-        this.cache.put(BigDecimal.class,ClassMetaInfo.$BigDecimal);
-        this.cache.put(BigInteger.class,ClassMetaInfo.$BigInteger);
+        ClassCache:
+        {
+            this.classCache = new HashMap<>(1<<8);
+            this.classCache.put(Object.class, ClassMetaInfo.$Object);
+            this.classCache.put(Map.class, ClassMetaInfo.$Map);
+            this.classCache.put(Collection.class, ClassMetaInfo.$Collection);
+            this.classCache.put(List.class, ClassMetaInfo.$List);
+            this.classCache.put(Set.class, ClassMetaInfo.$Set);
+            this.classCache.put(String.class, ClassMetaInfo.$String);
+            this.classCache.put(Number.class, ClassMetaInfo.$Number);
+            this.classCache.put(Integer.class, ClassMetaInfo.$Integer);
+            this.classCache.put(Float.class, ClassMetaInfo.$Float);
+            this.classCache.put(Double.class, ClassMetaInfo.$Double);
+            this.classCache.put(Boolean.class, ClassMetaInfo.$Boolean);
+            this.classCache.put(Byte.class, ClassMetaInfo.$Byte);
+            this.classCache.put(Short.class, ClassMetaInfo.$Short);
+            this.classCache.put(Long.class, ClassMetaInfo.$Long);
+            this.classCache.put(java.util.Date.class, ClassMetaInfo.$Date);
+            this.classCache.put(java.sql.Date.class, ClassMetaInfo.$SqlDate);
+            this.classCache.put(Timestamp.class, ClassMetaInfo.$Timestamp);
+            this.classCache.put(BigDecimal.class, ClassMetaInfo.$BigDecimal);
+            this.classCache.put(BigInteger.class, ClassMetaInfo.$BigInteger);
+        }
     }
 
     public ClassMetaInfo get(Class<?> clzz){
         ClassMetaInfo classMetaInfo;
-        if(null==(classMetaInfo = this.cache.get(clzz))) {
-            synchronized (this.cache){
-                if(null==(classMetaInfo = this.cache.get(clzz))) {
-                    this.cache.put(clzz,classMetaInfo = ReflectiveWrapper.unWrapperClass(clzz));
+        if(null==(classMetaInfo = this.classCache.get(clzz))) {
+            synchronized (this.classCache){
+                if(null==(classMetaInfo = this.classCache.get(clzz))) {
+                    this.classCache.put(clzz,classMetaInfo = ReflectiveWrapper.unWrapperClass(clzz));
                 }
             }
         }
