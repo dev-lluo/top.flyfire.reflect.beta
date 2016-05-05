@@ -121,7 +121,22 @@ public final class ClassMetaInfo extends $Type {
 
     @Override
     public boolean compatible(Type type) {
-        return false;
+        if (type == this){
+            return  true;
+        }else if(type instanceof ClassMetaInfo){
+            return this.rawType.isAssignableFrom(((ClassMetaInfo)type).getRawType());
+        }else if(type instanceof ParameterizedType){
+            Type rawType = ((ParameterizedType)type).getRawType();
+            if(rawType == this){
+                return true;
+            }else if(rawType instanceof ClassMetaInfo){
+                return this.rawType.isAssignableFrom(((ClassMetaInfo)rawType).getRawType());
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
     public ClassMetaInfo(Class<?> rawType) {

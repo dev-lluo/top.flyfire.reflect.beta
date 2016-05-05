@@ -20,7 +20,13 @@ public class TypeGenericArray extends $Type implements GenericArrayType {
 
     @Override
     public boolean compatible(Type type) {
-        return false;
+        if(type==this){
+            return true;
+        }else if(type instanceof TypeGenericArray){
+            return false;
+        }else{
+            return false;
+        }
     }
 
     @Override
